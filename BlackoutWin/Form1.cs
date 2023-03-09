@@ -14,6 +14,7 @@ namespace BlackoutWin
 {
     public partial class Blackout : Form
     {
+
         public static class Win32API
         {
             public const int SPI_SETDESKWALLPAPER = 20;
@@ -48,8 +49,6 @@ namespace BlackoutWin
         private bool isHighLighted = false;
         private const int SPI_SETDESKWALLPAPER = 20;
         private const int SPIF_UPDATEINIFILE = 0x01;
-        private const int SPI_SETSLIDESHOW = 0x1018;
-        private const int SS_USERSELECTED = 0x0004;
         private const int SPIF_SENDWININICHANGE = 0x02;
         private bool activated = false;
         private bool hasBeenFullscreen = false;
@@ -59,7 +58,7 @@ namespace BlackoutWin
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
 
-
+        private string folderPath = null;
         public Blackout()
         {
             InitializeComponent();
@@ -103,12 +102,14 @@ namespace BlackoutWin
                     hasBeenFullscreen = true;
                 }
             }
-            if (!fullscreenDetected )
+            if (!fullscreenDetected)
             {
-                if(!hasBeenFullscreen){
+                if (!hasBeenFullscreen)
+                {
                     labelinfo.Text = "Fullscreen detection:\nNot detected!";
 
-                } else
+                }
+                else
                 {
                     labelinfo.Text = "Fullscreen detection:\nNone!\nSetting Wallpapers to slideshow!";
                     hasBeenFullscreen = false;
@@ -133,25 +134,24 @@ namespace BlackoutWin
 
         private void SetWallpaperBackToSlideshow()
         {
-            string folderPath = @"F:\Pictures\Wallpapers";
+
             string[] wallpapers = Directory.GetFiles(folderPath);
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\PerMonitorSettings", true);
             if (wallpapers.Length > 0)
             {
                 // Set a random wallpaper for each monitor
-  
-                    int randomIndex = new Random().Next(0, wallpapers.Length);
-                    string randomWallpaper = wallpapers[randomIndex];
 
-                    // Set the wallpaper for the current screen
-                    SetWallpaper(randomWallpaper);
+                int randomIndex = new Random().Next(0, wallpapers.Length);
+                string randomWallpaper = wallpapers[randomIndex];
+
+                // Set the wallpaper for the current screen
+                SetWallpaper(randomWallpaper);
             }
             else
             {
                 // Handle the case where there are no wallpaper files
-                labelinfo.Text = "Ingen wallpapers fundet i mappen:\n" + @"F:\Pictures\Wallpapers";
+                labelinfo.Text = "No Wallpapers found in:\n" + folderPath;
             }
-            
+
 
         }
 
@@ -240,6 +240,37 @@ namespace BlackoutWin
             {
                 button1.ForeColor = Color.DarkGray;
                 isHighLighted = false;
+            }
+        }
+
+        private void Form_Load(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            try
+            {
+                string settingsFile = Path.Combine(Application.StartupPath, "settings.txt");
+                if (File.Exists(settingsFile))
+                {
+                    folderPath = File.ReadAllText(settingsFile);
+                    label2.Text = "saving:" + folderPath;
+
+                }
+                else
+                {
+                    // Prompt the user to choose a folder
+                    using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                    {
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            folderPath = dialog.SelectedPath;
+                            label2.Text = "Looking for wallpapers in:\n" + folderPath;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }
