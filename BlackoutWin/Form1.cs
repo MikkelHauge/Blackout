@@ -54,6 +54,8 @@ namespace BlackoutWin
         private bool activated = false;
         private bool hasBeenFullscreen = false;
 
+        string folderPath;
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
@@ -133,7 +135,6 @@ namespace BlackoutWin
 
         private void SetWallpaperBackToSlideshow()
         {
-            string folderPath = @"F:\Pictures\Wallpapers";
             string[] wallpapers = Directory.GetFiles(folderPath);
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\PerMonitorSettings", true);
             if (wallpapers.Length > 0)
