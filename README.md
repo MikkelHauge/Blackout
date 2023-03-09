@@ -8,6 +8,8 @@ I play videogames on the center-monitor. the others show a wallpaper, usually. T
 
 When it then detects you're not in fullscreen anymore, it sets the wallpaper to a random one, from a very specific folder (custom folder is on the todolist!) - it currently only cares about F:\Pictures\Wallpapers (I was lazy)
 
+Also note: When closing the program, it just minimizes to system tray. You have to right click and close it from there.
+
 This is still a work in progress.
 
 Todo:
