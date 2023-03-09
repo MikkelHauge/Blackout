@@ -48,8 +48,6 @@ namespace BlackoutWin
         private bool isHighLighted = false;
         private const int SPI_SETDESKWALLPAPER = 20;
         private const int SPIF_UPDATEINIFILE = 0x01;
-        private const int SPI_SETSLIDESHOW = 0x1018;
-        private const int SS_USERSELECTED = 0x0004;
         private const int SPIF_SENDWININICHANGE = 0x02;
         private bool activated = false;
         private bool hasBeenFullscreen = false;
@@ -105,12 +103,16 @@ namespace BlackoutWin
                     hasBeenFullscreen = true;
                 }
             }
-            if (!fullscreenDetected )
+            if (!fullscreenDetected)
             {
-                if(!hasBeenFullscreen){
+                if (!hasBeenFullscreen)
+                {
                     labelinfo.Text = "Fullscreen detection:\nNot detected!";
+                    label2.Text = "Will be looking for wallpapers:\n" + folderPath;
 
-                } else
+
+                }
+                else
                 {
                     labelinfo.Text = "Fullscreen detection:\nNone!\nSetting Wallpapers to slideshow!";
                     hasBeenFullscreen = false;
@@ -140,19 +142,19 @@ namespace BlackoutWin
             if (wallpapers.Length > 0)
             {
                 // Set a random wallpaper for each monitor
-  
-                    int randomIndex = new Random().Next(0, wallpapers.Length);
-                    string randomWallpaper = wallpapers[randomIndex];
 
-                    // Set the wallpaper for the current screen
-                    SetWallpaper(randomWallpaper);
+                int randomIndex = new Random().Next(0, wallpapers.Length);
+                string randomWallpaper = wallpapers[randomIndex];
+
+                // Set the wallpaper for the current screen
+                SetWallpaper(randomWallpaper);
             }
             else
             {
                 // Handle the case where there are no wallpaper files
                 labelinfo.Text = "Ingen wallpapers fundet i mappen:\n" + @"F:\Pictures\Wallpapers";
             }
-            
+
 
         }
 
@@ -244,9 +246,10 @@ namespace BlackoutWin
             }
         }
 
-        private void Form_Load(object sender, EventArgs e)
+        private void Blackout_Load(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Normal;
+            label2.Text = "Pick a folder";
             try
             {
                 string settingsFile = Path.Combine(Application.StartupPath, "settings.txt");
@@ -254,7 +257,7 @@ namespace BlackoutWin
                 {
                     folderPath = File.ReadAllText(settingsFile);
                     label2.Text = "Loaded:\n" + folderPath;
-                    
+
 
                 }
                 else
@@ -271,10 +274,8 @@ namespace BlackoutWin
                                 //Pass the filepath and filename to the StreamWriter Constructor
                                 StreamWriter sw = new StreamWriter(Path.Combine(Application.StartupPath, "settings.txt"));
                                 //Write a line of text
-                                sw.WriteLine(folderPath);
-                                //Write a second line of text
-                                sw.WriteLine("The folder for selecting a random wallpaper. Feel free to change this directly, within this file.\nJust remember to save!\nsaved using my amazing code!");
-                                //Close the file
+                                sw.WriteLine(folderPath); // flere linjer = error/Crash
+
                                 sw.Close();
                             }
                             catch (Exception eex)
@@ -295,6 +296,9 @@ namespace BlackoutWin
             {
                 MessageBox.Show(ex.ToString());
             }
+            label2.Text = "Will be looking for wallpapers in:\n" + folderPath;
+
         }
+
     }
 }

@@ -137,6 +137,7 @@
             Name = "Blackout";
             Text = "Blackout";
             FormClosing += MainForm_FormClosing;
+            Load += Blackout_Load;
             contextMenuStripSystemTray.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
