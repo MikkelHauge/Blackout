@@ -252,7 +252,8 @@ namespace BlackoutWin
                 if (File.Exists(settingsFile))
                 {
                     folderPath = File.ReadAllText(settingsFile);
-                    label2.Text = "saving:" + folderPath;
+                    label2.Text = "Loaded:\n" + folderPath;
+                    
 
                 }
                 else
@@ -263,7 +264,28 @@ namespace BlackoutWin
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
                             folderPath = dialog.SelectedPath;
-                            label2.Text = "Looking for wallpapers in:\n" + folderPath;
+
+                            try
+                            {
+                                //Pass the filepath and filename to the StreamWriter Constructor
+                                StreamWriter sw = new StreamWriter(Path.Combine(Application.StartupPath, "settings.txt"));
+                                //Write a line of text
+                                sw.WriteLine(folderPath);
+                                //Write a second line of text
+                                sw.WriteLine("saved using my amazing code!");
+                                //Close the file
+                                sw.Close();
+                            }
+                            catch (Exception eex)
+                            {
+                                Console.WriteLine("Exception: " + eex.Message);
+                            }
+                            finally
+                            {
+                                Console.WriteLine("Executing finally block.");
+                            }
+                            label2.Text = "Will be looking for wallpapers in:\n" + folderPath;
+
                         }
                     }
                 }
