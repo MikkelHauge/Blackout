@@ -242,5 +242,58 @@ namespace BlackoutWin
                 isHighLighted = false;
             }
         }
+
+        private void Form_Load(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            try
+            {
+                string settingsFile = Path.Combine(Application.StartupPath, "settings.txt");
+                if (File.Exists(settingsFile))
+                {
+                    folderPath = File.ReadAllText(settingsFile);
+                    label2.Text = "Loaded:\n" + folderPath;
+                    
+
+                }
+                else
+                {
+                    // Prompt the user to choose a folder
+                    using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                    {
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            folderPath = dialog.SelectedPath;
+
+                            try
+                            {
+                                //Pass the filepath and filename to the StreamWriter Constructor
+                                StreamWriter sw = new StreamWriter(Path.Combine(Application.StartupPath, "settings.txt"));
+                                //Write a line of text
+                                sw.WriteLine(folderPath);
+                                //Write a second line of text
+                                sw.WriteLine("The folder for selecting a random wallpaper. Feel free to change this directly, within this file.\nJust remember to save!\nsaved using my amazing code!");
+                                //Close the file
+                                sw.Close();
+                            }
+                            catch (Exception eex)
+                            {
+                                Console.WriteLine("Exception: " + eex.Message);
+                            }
+                            finally
+                            {
+                                Console.WriteLine("Executing finally block.");
+                            }
+                            label2.Text = "Will be looking for wallpapers in:\n" + folderPath;
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
     }
 }
