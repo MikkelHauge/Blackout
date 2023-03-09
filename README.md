@@ -14,7 +14,7 @@ This is still a work in progress.
 
 Todo:
 
-set a folder path for the wallpapers
+save the user-located wallpaper folder, in settings.txt. (Currently, it looks for the file, and uses it if it can - but it does not make one, if none are found)
 
 possibly set wallpaper "fit" (stretch, span etc)
 
